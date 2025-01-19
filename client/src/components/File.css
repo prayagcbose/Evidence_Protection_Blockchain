@@ -1,0 +1,86 @@
+/* src/components/File.css */
+.upload-file-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: transparent; /* No background color */
+    position: relative; /* Allow absolute positioning of header */
+  }
+  
+  .header {
+    position: absolute; /* Positioning the header at the top */
+    top: 10px; /* Space from the top */
+    left: 0.%; /* Space from the left */
+    z-index: 1000; /* Ensure it is above other elements */
+  }
+  
+  .menu-icon {
+    cursor: pointer; /* Pointer cursor on hover */
+    color: white; /* Icon color */
+    font-size: 24px; /* Icon size */
+  }
+  
+  h2 {
+    margin-bottom: 20px; /* Space below the heading */
+    color: rgba(255, 255, 255, 0); /* Fully transparent */
+}
+
+
+  
+  .button-row {
+    display: flex; /* Align buttons in a straight line */
+    gap: 50px; /* Increased space between buttons */
+  }
+  
+  /* Remaining styles... (unchanged) */
+  .upload-button,
+  .verify-button {
+    display: flex;
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center text and icon */
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Blurring the background */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Border for effect */
+    border-radius: 15px; /* Rounded corners */
+    padding: 10px; /* Padding for the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    width: 200px; /* Fixed width for both buttons */
+    height: 70px; /* Fixed height for both buttons */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Shadow for depth */
+    transition: background 0.3s, transform 0.3s; /* Smooth transition */
+  }
+  
+  /* Specific colors for the buttons */
+  .upload-button {
+    color: #2196F3; /* Blue color for the Upload button */
+  }
+  
+  .verify-button {
+    color: #4CAF50; /* Green color for the Verify button */
+  }
+  
+  .upload-button:hover,
+  .verify-button:hover {
+    background: rgba(255, 255, 255, 0.2); /* Change background on hover */
+    transform: translateY(-3px); /* Slight lift effect on hover */
+  }
+  
+  /* Adjusting icon size and spacing */
+  .upload-button i,
+  .verify-button i {
+    margin-right: 5px; /* Space between icon and text */
+    font-size: 20px; /* Size of icons */
+  }
+  
+  /* Optional: Add hover color change for icons */
+  .upload-button:hover i {
+    color: #1976D2; /* Darker blue for icon on hover */
+  }
+  
+  .verify-button:hover i {
+    color: #388E3C; /* Darker green for icon on hover */
+  }
+  
