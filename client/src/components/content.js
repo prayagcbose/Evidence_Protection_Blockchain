@@ -1,23 +1,71 @@
 import React, { useState } from 'react';
 import './content.css';
+import useEth from "../contexts/EthContext/useEth";
+import { v4 as uuidv4 } from "uuid"; 
 
 const Content = () => {
+  const { state: { contract, accounts } } = useEth();
   const [currentForm, setCurrentForm] = useState(null);
+  const [file, setFile] = useState(null);
+  const [UUID, setUUID] = useState(null);
+  const [userInputedUUID, setUserInputedUUID] = useState(null);
 
-  const handleUploadSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    alert('Upload form submitted successfully!');
-    setCurrentForm(null); // Close the form
+  const handleFileUpload = async (e)=>{
+    let file = await e.target.files[0];
+    setFile(file);
+  }
+
+  const getNewUUID = () => {
+    const newUUID = uuidv4(); // Generate a new UUID
+    return newUUID;
   };
 
-  const handleVerifySubmit = (e) => {
+  const uploadToBlockChain = async (id, hash)=>{
+    await contract.methods.uploadHash(id, hash).send({ from: accounts[0] });
+    alert("data uploaded to Blockchain");
+  }
+
+  const checkDataFromBlockChain = async (id, hash)=>{
+    const isValid = await contract.methods.checkHash(id, hash).call({ from: accounts[0] });
+    if(isValid === "1"){
+      alert("Data is valid")
+    }else{
+      alert("Data has been corrupted")
+    }
+  }
+
+  const handleUploadSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
-    alert('Verify form submitted successfully!');
-    setCurrentForm(null); // Close the form
+    // featch the details from the form
+    const fileBuffer = await file.arrayBuffer();
+
+    // Use the SubtleCrypto API to compute the hash
+    const hashBuffer = await crypto.subtle.digest("SHA-256", fileBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map((byte) => byte.toString(16).padStart(2, "0")).join("");
+    const newUUID = getNewUUID();
+    setUUID(newUUID);
+    console.log(hashHex);
+    console.log(newUUID);
+    uploadToBlockChain(newUUID, hashHex);
+    // alert('Upload form submitted successfully!');
+  };
+
+  const handleVerifySubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+    const fileBuffer = await file.arrayBuffer();
+
+    // Use the SubtleCrypto API to compute the hash
+    const hashBuffer = await crypto.subtle.digest("SHA-256", fileBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map((byte) => byte.toString(16).padStart(2, "0")).join("");
+    console.log(hashHex);
+    checkDataFromBlockChain(userInputedUUID, hashHex);
   };
 
   const renderUploadForm = () => (
     <form className="form" onSubmit={handleUploadSubmit}>
+      {UUID && <h4>Please keep this Unique code with you to check the valdity {UUID} </h4>}
       <label>
         Name:
         <input type="text" name="name" required />
@@ -34,7 +82,7 @@ const Content = () => {
       </label>
       <label>
         Upload File:
-        <input type="file" name="file" required />
+        <input type="file" name="file" required onChange={handleFileUpload} />
       </label>
       <button type="submit">Submit</button>
     </form>
@@ -43,12 +91,12 @@ const Content = () => {
   const renderVerifyForm = () => (
     <form className="form" onSubmit={handleVerifySubmit}>
       <label>
-        Case ID:
-        <input type="text" name="caseId" required />
+        Unique ID of the Document:
+        <input type="text" name="caseId" required value={userInputedUUID} onChange={(e)=> setUserInputedUUID(e.target.value)}/>
       </label>
       <label>
         Upload File:
-        <input type="file" name="file" required />
+        <input type="file" name="file" required onChange={handleFileUpload} />
       </label>
       <button type="submit">Submit</button>
     </form>
